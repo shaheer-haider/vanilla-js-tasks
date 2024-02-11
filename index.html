@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Attributes</title>
+</head>
+
+<body>
+
+    <article data-product>
+        <!-- Products -->
+        <div data-product-info="t-short-1;color:white;size:L">
+            <strong>0 (White L)</strong>
+            <del>0</del>
+        </div>
+        <div data-product-info="t-short-1;color:white;size:XL">
+            <strong>0 (White XL)</strong>
+            <del>0</del>
+        </div>
+        <div data-product-info="t-short-1;color:black;size:L">
+            <strong>0 (Black L)</strong>
+            <del>0</del>
+        </div>
+        <div data-product-info="t-short-1;color:black;size:XL">
+            <strong>0 (Black XL)</strong>
+            <del>0</del>
+        </div>
+
+        <!-- Input fields -->
+        <fieldset data-product-attribute-form="2">
+            <legend data-product-attribute-legend="">color</legend>
+            <input id="t-short-1;color:white" type="radio" name="t-short-1;color" checked="true">
+            <label data-product-attribute="" for="t-short-1;color:white">white</label>
+            <input id="t-short-1;color:black" type="radio" name="t-short-1;color">
+            <label data-product-attribute="" for="t-short-1;color:black">black</label>
+        </fieldset>
+        <fieldset data-product-attribute-form="1">
+            <legend data-product-attribute-legend="">size</legend>
+            <input id="t-short-1;size:XL" type="radio" name="t-short-1;size" checked="true">
+            <label data-product-attribute="" for="t-short-1;size:XL">XL</label>
+            <input id="t-short-1;size:L" type="radio" name="t-short-1;size">
+            <label data-product-attribute="" for="t-short-1;size:L">L</label>
+        </fieldset>
+    </article>
+
+    <script>
+        // Function to handle attribute comparison and hiding/showing of data-product-info elements
+        function handleAttributeComparison() {
+            // Get attribute from all checked radio buttons
+            const checkedInputs = document.querySelectorAll('[data-product-attribute-form] input[type="radio"]:checked');
+            const checkedAttributes = Array.from(checkedInputs).map(input => input.id.split(';')); // Extract attributes from the ID
+
+            // Loop over the products that has data-product-info attribute
+            const relatedProductInfos = document.querySelectorAll('[data-product-info]');
+            relatedProductInfos.forEach(productInfo => {
+                // get value of data-product-info of the product
+                const productAttributes = productInfo.getAttribute('data-product-info').split(';');
+
+                // check if product should be visible by matching the product attributes and checked radio buttons
+                const isVisible = checkedAttributes.every(checkedAttribute => {
+                    return checkedAttribute.every(attr => productAttributes.includes(attr));
+                });
+
+                // Hide or show the product
+                if (isVisible) {
+                    productInfo.removeAttribute('hidden');
+                } else {
+                    productInfo.setAttribute('hidden', 'true');
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get all radio inputs inside data-product-attribute-form
+            const radioInputs = document.querySelectorAll('[data-product-attribute-form] input[type="radio"]');
+
+            // Initial check for pre-checked inputs
+            radioInputs.forEach(input => {
+                if (input.checked) {
+                    handleAttributeComparison(input);
+                }
+            });
+
+            // Add event listeners to all radio inputs inside data-product-attribute-form
+            radioInputs.forEach(input => {
+                input.addEventListener('change', function () {
+                    handleAttributeComparison(this);
+                });
+            });
+
+        });
+    </script>
+
+</body>
+
+</html>
